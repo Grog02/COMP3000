@@ -1,0 +1,4 @@
+repository "COMP3000@local"
+  path "/"
+    br "/main"
+    co "/main"
