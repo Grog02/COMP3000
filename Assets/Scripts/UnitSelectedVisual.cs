@@ -8,6 +8,7 @@ public class UnitSelectedVisual : MonoBehaviour
 
     [SerializeField] private Unit unit;
 
+
     private MeshRenderer meshRenderer;
     private void Awake()
     {
@@ -38,5 +39,10 @@ public class UnitSelectedVisual : MonoBehaviour
         {
             meshRenderer.enabled = false;
         }
+    }
+
+    private void OnDestroy() 
+    {
+        UnitActionSystem.Instance.OnSelectedUnitChanged -= UnitActionSystem_OnSelectedUnitChanged; 
     }
 }
