@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -46,18 +47,22 @@ public class UnitActionSystem : MonoBehaviour
             return;
         }
 
+        if(!TurnSystem.Instance.IsPlayerTurn())
+        {
+            return;
+        }
+
         if (EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }
+
         if (TryHandleSelection())
         {
             return;
         }
-
+        
         HandleSelectedAction();
-
-
         
     }
     
@@ -72,6 +77,7 @@ public class UnitActionSystem : MonoBehaviour
             {
                 if(selectedUnit.TrySpendActionPointsToPerformAction(selectedAction))
                 {
+
                     SetBusy();
                     selectedAction.TakeAction(mouseGridPosition, ClearBusy);
                     OnActionStart?.Invoke(this, EventArgs.Empty);
@@ -94,19 +100,27 @@ public class UnitActionSystem : MonoBehaviour
     }
     private bool TryHandleSelection()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, unitLayerMask))
+        if(Input.GetMouseButtonDown(0))
         {
-            if (raycastHit.transform.TryGetComponent<Unit>(out Unit unit))
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, unitLayerMask))
             {
-                if(unit == selectedUnit)
+                if (raycastHit.transform.TryGetComponent<Unit>(out Unit unit))
                 {
-                    // unit already selected
-                    return false;
+                    if(unit == selectedUnit)
+                    {
+                        // unit already selected
+                        return false;
+                    }
+                    if (unit.IsEnemy())
+                    {
+                        // clicked on enemy unit
+                        return false;
+                    }
+                    SetSelectedUnit(unit);
+                    return true;
                 }
-                SetSelectedUnit(unit);
-                return true;
-            }
+            }   
         }
         return false;
     }
