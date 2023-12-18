@@ -10,10 +10,15 @@ public class Unit : MonoBehaviour
     
     public static event EventHandler OnAnyActionPointsChanged;
 
+    public static event EventHandler OnAnyUnitSpawned;
+
+    public static event EventHandler OnAnyUnitDead;
+
     [SerializeField] private bool isEnemy;
     private SpinAction spinAction;
     private GridPosition gridPosition;
     private MoveAction moveAction;
+    private ShootAction shootAction;
     private BaseAction[] baseActionArray;
     private int actionPoints = ACTION_POINTS_MAX;
     private HealthSystem healthSystem;
@@ -24,6 +29,7 @@ public class Unit : MonoBehaviour
         healthSystem = GetComponent<HealthSystem>();
         moveAction = GetComponent<MoveAction>();    
         spinAction = GetComponent<SpinAction>(); 
+        shootAction = GetComponent<ShootAction>();
         baseActionArray = GetComponents<BaseAction>();
     }
 
@@ -36,6 +42,10 @@ public class Unit : MonoBehaviour
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
 
         healthSystem.OnDead += HealthSystem_OnDead;
+
+        OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
+
+        
     }
     private void Update()
     {
@@ -44,8 +54,10 @@ public class Unit : MonoBehaviour
         if(newGridPosition != gridPosition)
         {
             // Unit Change grid position
-            LevelGrid.Instance.UnitMovedGridPosition(this, gridPosition, newGridPosition);
+            GridPosition oldGridPosition = gridPosition;
             gridPosition = newGridPosition;     
+
+            LevelGrid.Instance.UnitMovedGridPosition(this, oldGridPosition, newGridPosition);
         }
     }
 
@@ -61,6 +73,11 @@ public class Unit : MonoBehaviour
     public SpinAction GetSpinAction()
     {
         return spinAction;
+    }
+
+    public ShootAction GetShootAction()
+    {
+        return shootAction;
     }
 
     public Vector3 GetWorldPosition()
@@ -139,5 +156,11 @@ public class Unit : MonoBehaviour
     {
         LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this); 
         Destroy(gameObject);
+        OnAnyUnitDead?.Invoke(this, EventArgs.Empty);
+    }
+
+    public float GetHealthNormalized()
+    {
+        return healthSystem.GetHealthNormalised();
     }
 }
