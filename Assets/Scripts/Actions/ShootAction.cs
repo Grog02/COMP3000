@@ -6,6 +6,7 @@ using UnityEngine;
 public class ShootAction : BaseAction
 {
 
+    public static event EventHandler<OnShootEventArgs> OnAnyShoot;
     public event EventHandler<OnShootEventArgs> OnShoot;
 
     public class OnShootEventArgs : EventArgs
@@ -21,6 +22,8 @@ public class ShootAction : BaseAction
         Shooting,
         Cooldown,
     }
+    [SerializeField] private LayerMask obstacleLayerMask;
+
     private State state;
 
     private int maxShootDistance = 7;
@@ -89,12 +92,17 @@ public class ShootAction : BaseAction
 
     private void Shoot()
     {
+        OnAnyShoot?.Invoke(this, new OnShootEventArgs
+        {
+            targetUnit = targetUnit,
+            shootingUnit = unit
+        });
         OnShoot?.Invoke(this, new OnShootEventArgs
         {
             targetUnit = targetUnit,
             shootingUnit = unit
         });
-        targetUnit.Damage(40);
+        targetUnit.Damage(35);
     }
 
 
@@ -145,6 +153,14 @@ public class ShootAction : BaseAction
                 if(targetUnit.IsEnemy() == unit.IsEnemy())
                 {
                     // both units on same team
+                    continue;
+                }
+                Vector3 unitWorldPosition = LevelGrid.Instance.GetWorldPosition(unitGridPosition);
+                Vector3 shootDirection = (targetUnit.GetWorldPosition() - unitWorldPosition). normalized;
+                float unitShoulderHeight = 1.7f;
+                if(Physics.Raycast(unitWorldPosition + Vector3.up * unitShoulderHeight, shootDirection,  Vector3.Distance(unitWorldPosition, targetUnit.GetWorldPosition()), obstacleLayerMask))
+                {
+                    // Obstacle 
                     continue;
                 }
 

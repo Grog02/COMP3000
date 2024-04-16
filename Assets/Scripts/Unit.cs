@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    private const int ACTION_POINTS_MAX = 2;
+    private const int ACTION_POINTS_MAX = 4;
     
     public static event EventHandler OnAnyActionPointsChanged;
 
@@ -15,10 +15,7 @@ public class Unit : MonoBehaviour
     public static event EventHandler OnAnyUnitDead;
 
     [SerializeField] private bool isEnemy;
-    private SpinAction spinAction;
     private GridPosition gridPosition;
-    private MoveAction moveAction;
-    private ShootAction shootAction;
     private BaseAction[] baseActionArray;
     private int actionPoints = ACTION_POINTS_MAX;
     private HealthSystem healthSystem;
@@ -27,9 +24,6 @@ public class Unit : MonoBehaviour
     private void Awake() 
     {
         healthSystem = GetComponent<HealthSystem>();
-        moveAction = GetComponent<MoveAction>();    
-        spinAction = GetComponent<SpinAction>(); 
-        shootAction = GetComponent<ShootAction>();
         baseActionArray = GetComponents<BaseAction>();
     }
 
@@ -61,25 +55,22 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public MoveAction GetMoveAction()
+    public T GetAction<T>() where T: BaseAction
     {
-        return moveAction;
+        foreach (BaseAction baseAction in baseActionArray)
+        {
+            if(baseAction is T)
+            {
+                return (T)baseAction;
+            }
+        }
+        return null;
     }
 
     public GridPosition GetGridPosition()
     {
         return gridPosition;
     }
-    public SpinAction GetSpinAction()
-    {
-        return spinAction;
-    }
-
-    public ShootAction GetShootAction()
-    {
-        return shootAction;
-    }
-
     public Vector3 GetWorldPosition()
     {
         return transform.position;

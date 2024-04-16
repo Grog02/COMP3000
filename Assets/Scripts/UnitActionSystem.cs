@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Unity.VisualScripting.ReorderableList;
+//using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -68,9 +68,9 @@ public class UnitActionSystem : MonoBehaviour
     
     private void HandleSelectedAction()
     {
-        if(Input.GetMouseButtonDown(0))
+        if(InputManager.Instance.isLeftMouseDownThisFrame())
         {
-            GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(Mouse.GetPosition());
+            GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseScript.GetPosition());
 
 
             if(selectedAction.IsValidActionGridPosition(mouseGridPosition))
@@ -99,9 +99,9 @@ public class UnitActionSystem : MonoBehaviour
     }
     private bool TryHandleSelection()
     {
-        if(Input.GetMouseButtonDown(0))
+        if(InputManager.Instance.isLeftMouseDownThisFrame())
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = Camera.main.ScreenPointToRay(InputManager.Instance.GetMouseScreenPosition());
             if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, unitLayerMask))
             {
                 if (raycastHit.transform.TryGetComponent<Unit>(out Unit unit))
@@ -126,7 +126,7 @@ public class UnitActionSystem : MonoBehaviour
     private void SetSelectedUnit(Unit unit)
     {
         selectedUnit = unit;
-        SetSelectedAction(unit.GetMoveAction());
+        SetSelectedAction(unit.GetAction<MoveAction>());
         //Creates event
         OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
     }
