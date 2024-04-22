@@ -23,9 +23,10 @@ public class Crate : MonoBehaviour
     }
     public void Damage()
     {
-
+        // Change crate to destroyed crate 
         Transform crateDestroyedTransform = Instantiate(destroyedCrate, transform.position, transform.rotation);
 
+        // "Explode" crate fragments 
         ExplosionCrateParts(crateDestroyedTransform, 150f, transform.position, 10f);
         Destroy(gameObject);
 
@@ -38,8 +39,10 @@ public class Crate : MonoBehaviour
         {
             if(child.TryGetComponent<Rigidbody>(out Rigidbody childRigidbody))
             {
+                
                 childRigidbody.AddExplosionForce(explosionForce, explosionPosition, explosionRange);
             }
+            // "Explode" each segment of the crate
             ExplosionCrateParts(child, explosionForce, explosionPosition, explosionRange);
         }
     }

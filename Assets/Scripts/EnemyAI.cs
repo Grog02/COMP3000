@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
 
+    // All possible states for enemies to be in
     private enum State
     {
         WaitingForEnemyTurn,
@@ -18,11 +19,13 @@ public class EnemyAI : MonoBehaviour
 
     private void Awake() 
     {
-        state = State.WaitingForEnemyTurn;     
+        // Always start waiting for turn
+        state = State.WaitingForEnemyTurn;
     }
 
     private void Start() 
     {
+        // Subscribe to event when turn changes to enemy turn
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged; 
     }
 
@@ -48,7 +51,7 @@ public class EnemyAI : MonoBehaviour
                     }
                     else
                     {
-                        // no more enemies can take actions
+                        // If no more enemies can take actions go to next turn
                         TurnSystem.Instance.NextTurn();
                     }
                     
@@ -56,6 +59,7 @@ public class EnemyAI : MonoBehaviour
                 }
                 break;
             case State.Busy:
+                // Enemy is performing action
                 break;
         }
         
@@ -63,6 +67,7 @@ public class EnemyAI : MonoBehaviour
 
     private void SetStateTakingTurn()
     {
+        // Time between moves so they do not happen instantly after one move finishes 
         timer = 0.5f;
         state = State.TakingTurn;
     }
@@ -72,10 +77,12 @@ public class EnemyAI : MonoBehaviour
         if(!TurnSystem.Instance.IsPlayerTurn())
         {
             state = State.TakingTurn;
+            // Timer before taking move so enemy's turn doesn't start instantly
             timer = 2f;
         }
     }
 
+    // Try to make a move
     private bool TryTakeEnemyAIAction(Action onEnemyAIActionComplete)
     {
         foreach(Unit enemyUnit in UnitManager.Instance.GetEnemyUnitList())
@@ -88,17 +95,19 @@ public class EnemyAI : MonoBehaviour
         return false;
     }
 
+    // Try to make a move for a specific unit
     private bool TryTakeEnemyAIAction(Unit enemyUnit, Action onEnemyAIActionComplete)
     {
         EnemyAIAction bestEnemyAIAction = null;
         BaseAction bestBaseAction = null;
         foreach(BaseAction baseAction in enemyUnit.GetBaseActionArray())
         {
+            // If enemy has enough action points or not
             if(!enemyUnit.CanSpendActionPoints(baseAction))
             {
-                // enemy does not have enough action points
                 continue;
             }
+            // Get best enemy ai move based on value
             if(bestEnemyAIAction == null)
             {
                 bestEnemyAIAction = baseAction.GetBestEnemyAIAction();
@@ -117,6 +126,7 @@ public class EnemyAI : MonoBehaviour
             
         }
 
+        // If best move is found and enemy has enough action points, make the move
         if(bestEnemyAIAction != null && enemyUnit.TrySpendActionPointsToPerformAction(bestBaseAction))
         {
             bestBaseAction.TakeAction(bestEnemyAIAction.gridPosition, onEnemyAIActionComplete);

@@ -114,14 +114,16 @@ public class MoveAction : BaseAction
                     //grid position used by another unit
                     continue;
                 }
-
+                
                 if(!PathFinding.Instance.IsWalkableGridPosition(testGridPosition))
                 {
+                    //grid position is an object or wall 
                     continue;
                 }
 
                 if(!PathFinding.Instance.HasPath(unitGridPosition, testGridPosition))
                 {
+                    //grid position does not have a valid path
                     continue;
                 }
 

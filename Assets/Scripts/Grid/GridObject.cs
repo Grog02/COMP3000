@@ -14,6 +14,7 @@ public class GridObject
 
     private IInteractable interactable;
 
+    // Initialise grid object with grid system and grid position 
     public GridObject(GridSystem<GridObject> gridSystem, GridPosition gridPosition)
     {
         this.gridSystem = gridSystem;

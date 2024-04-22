@@ -5,22 +5,26 @@ using UnityEngine;
 
 public class InteractAction : BaseAction
 {
+    // Range for InteractAction
     private int maxInteractDistance = 1;
 
 
     private void Update()
     {
+        // Is action active
         if(!isActive)
         {
             return;
         }
         
     }
+    // Action Name
     public override string GetActionName()
     {
         return "Interact";
     }
 
+    // Enemy AI Action
     public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
     {
         return new EnemyAIAction{
@@ -28,13 +32,16 @@ public class InteractAction : BaseAction
             actionValue = 0
         };
     }
-
+    
+    // Valid Grid Positions for Interact Action
     public override List<GridPosition> GetValidActionGridPositionList()
     {
+        // Store valid grid positions
         List<GridPosition> validGridPositionList = new List<GridPosition>();
-        
+        // Units current position
         GridPosition unitGridPosition = unit.GetGridPosition();
 
+        // Loop through grid positions in range 
         for (int x =- maxInteractDistance; x <= maxInteractDistance; x++)
         {
             for (int z =- maxInteractDistance; z <= maxInteractDistance; z++)

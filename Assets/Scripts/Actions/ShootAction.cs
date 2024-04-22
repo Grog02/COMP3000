@@ -6,6 +6,7 @@ using UnityEngine;
 public class ShootAction : BaseAction
 {
 
+    // Events 
     public static event EventHandler<OnShootEventArgs> OnAnyShoot;
     public event EventHandler<OnShootEventArgs> OnShoot;
 
@@ -15,7 +16,7 @@ public class ShootAction : BaseAction
         public Unit shootingUnit;
     }
 
-
+    // Enum for different states of the shooting action
     private enum State
     {
         Aiming,
@@ -43,10 +44,12 @@ public class ShootAction : BaseAction
         switch (state)
         {
             case State.Aiming:
+            // Aiming state: rotate towards target
             Vector3 aimDirection = (targetUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
                 float rotateSpeed = 10f;
                 transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * rotateSpeed);
                 break;
+            // Shooting state: shoot if possible
             case State.Shooting:
                 if(canShoot)
                 {
@@ -54,6 +57,7 @@ public class ShootAction : BaseAction
                     canShoot = false;
                 }
                 break;
+            // Cooldown state: do nothing
             case State.Cooldown:
                 break;
         }
@@ -63,6 +67,7 @@ public class ShootAction : BaseAction
         } 
     }
     
+    // Transition to the next state
     private void NextState()
     {
         switch (state)
@@ -92,6 +97,7 @@ public class ShootAction : BaseAction
 
     private void Shoot()
     {
+        // Invoke shooting events
         OnAnyShoot?.Invoke(this, new OnShootEventArgs
         {
             targetUnit = targetUnit,
@@ -102,27 +108,30 @@ public class ShootAction : BaseAction
             targetUnit = targetUnit,
             shootingUnit = unit
         });
+        // Damage dealt by shoot action
         targetUnit.Damage(35);
     }
 
-
+    // Override BaseAction string - Shoot
     public override string GetActionName()
     {
         return "Shoot";
     }
 
+    // Get valid grid positions to shoot
     public override List<GridPosition> GetValidActionGridPositionList()
     {
         GridPosition unitGridPosition = unit.GetGridPosition();
         return GetValidActionGridPositionList(unitGridPosition);
     }
 
+    // Get valid grid positions to shoot from current position
     public List<GridPosition> GetValidActionGridPositionList(GridPosition unitGridPosition)
     {
         List<GridPosition> validGridPositionList = new List<GridPosition>();
         
 
-
+        // Loop through shooting range to look for a grid to shoot 
         for (int x =- maxShootDistance; x <= maxShootDistance; x++)
         {
             for (int z =- maxShootDistance; z <= maxShootDistance; z++)
@@ -139,6 +148,7 @@ public class ShootAction : BaseAction
                 int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
                 if(testDistance > maxShootDistance)
                 {
+                    // Outside of the shooting range
                     continue;
                 }
 
@@ -160,7 +170,7 @@ public class ShootAction : BaseAction
                 float unitShoulderHeight = 1.7f;
                 if(Physics.Raycast(unitWorldPosition + Vector3.up * unitShoulderHeight, shootDirection,  Vector3.Distance(unitWorldPosition, targetUnit.GetWorldPosition()), obstacleLayerMask))
                 {
-                    // Obstacle 
+                    // Obstacle in the way
                     continue;
                 }
 
@@ -176,7 +186,7 @@ public class ShootAction : BaseAction
         
         
         targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
-
+        // Start aiming state
         state = State.Aiming;
         float aimingStateTime = 1f;
         stateTimer = aimingStateTime;
@@ -198,7 +208,6 @@ public class ShootAction : BaseAction
     public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
     {
         Unit targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
-
         
         return new EnemyAIAction{
             gridPosition = gridPosition,

@@ -8,7 +8,7 @@ public class LevelGrid : MonoBehaviour
 
     public static LevelGrid Instance {get; private set;}
 
-     public event EventHandler OnAnyUnitMovedGridPosition;
+    public event EventHandler OnAnyUnitMovedGridPosition;
     public event EventHandler<OnAnyUnitMovedGridPositionEventArgs> OnAnyUnitMoveGridPosition;
     public class OnAnyUnitMovedGridPositionEventArgs : EventArgs
     {

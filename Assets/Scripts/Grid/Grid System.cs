@@ -12,7 +12,7 @@ public class GridSystem<TGridObject>
     private float cellSize;
     private TGridObject[,] gridObjectArray;
 
-    
+    // Initialise grid system 
     public GridSystem(int width, int height, float cellSize, Func<GridSystem<TGridObject>, GridPosition, TGridObject> createGridObject)
     {
         this.width = width;
@@ -20,6 +20,7 @@ public class GridSystem<TGridObject>
         this.cellSize = cellSize;
 
         gridObjectArray = new TGridObject[width,height];
+        // Loop through each grid position and create grid objects 
         for (int x = 0; x <width; x++)
         {
             for (int z = 0; z < height; z++)
@@ -33,12 +34,13 @@ public class GridSystem<TGridObject>
         }
         
     }
-    
+    // Get the world position from the grid position 
     public Vector3 GetWorldPosition(GridPosition gridPosition)
     {
         return new Vector3(gridPosition.x, 0, gridPosition.z) * cellSize;
     }
 
+    // Get the grid position from the world position 
     public GridPosition GetGridPosition(Vector3 worldPosition)
     {
         return new GridPosition(
@@ -47,6 +49,7 @@ public class GridSystem<TGridObject>
         );
     }
 
+    
     public void CreateDebugObjects(Transform debugPrefab)
     {
         for (int x = 0; x < width; x++)
