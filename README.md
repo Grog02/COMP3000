@@ -7,3 +7,5 @@ For LFS in CMD, type in commands below in the order it shows
 - git lfs checkout
 
 ### Turn-Based Strategy
+Bullet by Bullet is a 3D Turn-Based strategy shooter game. The player controls five blue units that look like crash test dummies and their mission is to eliminate all of the enemies in the building. All units, both enemy and friendly, have 100  health. The building has walls and pillars for the player’s units to take cover and work around, it allows for the player to take a defensive approach to the situation. 
+
