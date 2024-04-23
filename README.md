@@ -13,6 +13,7 @@ It is recommended that the zip file for the game be downloaded over playing in t
 If the zip file is downloaded and extracted to a new folder, to start the game, 'Bullet by Bullet.exe' must be executed. 
 
 The controls for Bullet by Bullet are shown below
+
 ![image](https://github.com/Grog02/COMP3000-George-Rogers/assets/91668510/2cfed305-b3d1-4c05-bbdd-cc60977f802d)
 
 
