@@ -7,8 +7,12 @@ For LFS in CMD, type in commands below in the order it shows
 - git lfs checkout
 
 Bullet by Bullet is designed for Windows 10/11. No external devices or additional software are necessary to run the game. 
+
 Itch.io Page: [https://georgerogers.itch.io/bullet-by-bullet-demo]([url](https://georgerogers.itch.io/bullet-by-bullet-demo))
-It is recommended that the zip file for the game be downloaded over playing in the browser version that lacks the power to run the game smoothly. If the zip file is downloaded and extracted to a new folder, the file explorer should look as it does below: 
+It is recommended that the zip file for the game be downloaded over playing in the browser version that lacks the power to run the game smoothly. 
+If the zip file is downloaded and extracted to a new folder, to start the game, 'Bullet by Bullet.exe' must be executed. 
+
+![image](https://github.com/Grog02/COMP3000-George-Rogers/assets/91668510/2cfed305-b3d1-4c05-bbdd-cc60977f802d)
 
 
 
